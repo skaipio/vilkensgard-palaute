@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { Badge, ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
 import { getAllFeedback } from './api';
 import FeedbackForm from './FeedbackForm';
@@ -7,7 +7,10 @@ import FeedbackForm from './FeedbackForm';
 const FeedbackList = ({ feedbacks = [] }) =>
   <ListGroup>
   {
-    feedbacks.map(feedback => <ListGroupItem key={feedback.key}>{feedback.feedback}</ListGroupItem>)
+    feedbacks.map(feedback => <ListGroupItem className="justify-content-between" key={feedback.key}>
+      {feedback.feedback}
+      <Badge color="info">{ new Date(feedback.timestamp).toLocaleDateString('fi') }</Badge>
+    </ListGroupItem>)
   }
   </ListGroup>
 
