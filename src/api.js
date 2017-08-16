@@ -10,6 +10,23 @@ const firebaseApp = firebase.initializeApp({
 
 const database = firebase.database(firebaseApp);
 
+const getRef = (ref) => {
+  const fullRef = process.env.NODE_ENV === 'production' ? ref : `/dev${ref}`
+  return database.ref(fullRef);
+}
+
+export async function getAllFeedback() {
+  const snapshot = await getRef('/feedback').once('value');
+  const data = snapshot.val();
+  if (!data) {
+    return [];
+  }
+  return Object.keys(data).map(key => ({
+    key,
+    ...data[key]
+  })).reverse();
+}
+
 export async function postFeedback(feedback) {
-  return await database.ref('/feedback').push({feedback})
+  return await getRef('/feedback').push({feedback})
 }

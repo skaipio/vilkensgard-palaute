@@ -1,18 +1,43 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
+import { getAllFeedback } from './api';
+import FeedbackForm from './FeedbackForm';
+
+const FeedbackList = ({ feedbacks = [] }) =>
+  <ListGroup>
+  {
+    feedbacks.map(feedback => <ListGroupItem key={feedback.key}>{feedback.feedback}</ListGroupItem>)
+  }
+  </ListGroup>
+
 
 class App extends Component {
+  state = {
+    feedbacks: []
+  }
+
+  getFeedbackToState = async () => {
+    const feedbacks = await getAllFeedback();
+    this.setState({
+      feedbacks
+    })
+  }
+
+  componentDidMount() {
+    this.getFeedbackToState();
+  }
+
   render() {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+          <h2>Vilkensgard</h2>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div className="container">
+          <FeedbackForm onFeedbackSubmit={this.getFeedbackToState} />
+          <FeedbackList feedbacks={this.state.feedbacks} />
+        </div>
       </div>
     );
   }
