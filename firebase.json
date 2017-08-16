@@ -1,10 +1,11 @@
 {
   "hosting": {
     "public": "build",
-    // Add the "rewrites" section within "hosting"
-    "rewrites": [ {
-      "source": "**",
-      "destination": "/index.html"
-    } ]
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
   }
 }
