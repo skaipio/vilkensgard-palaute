@@ -21,7 +21,6 @@ class App extends Component {
 
   isTokenValid = async (token) => {
     const response = await validateToken(token);
-    console.info(response);
     return response.valid;
   }
 
