@@ -6,7 +6,8 @@ const cors = require('cors');
 admin.initializeApp(functions.config().firebase);
 
 const app = express();
-const feedbackController = require('./feedbackController')
+const feedbackController = require('./feedbackController');
+const authController = require('./authController');
 
 const whitelist = ['http://localhost:3000', 'https://vilkensgard-palaute.firebaseapp.com'];
 
@@ -29,6 +30,7 @@ app.use('*', cors(corsDelegate));
 app.options('*', cors(corsDelegate));
 
 app.use('(/api)?/feedback', feedbackController);
+app.use('(/api)?/validateToken', authController);
 
 app.use((err, req, res, next) => {
   if (err.error === 'cors') {

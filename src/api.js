@@ -26,17 +26,18 @@ const getRequestOptions = (method, headers = new Headers()) => {
   };
 }
 
+const transform = (body) => {
+  return Object.keys(body).map(key => ({
+    key,
+    ...body[key]
+  }));
+}
+
 const api = {
   get: async (path) => {
     const response = await fetch(`${apiUrl}${path}`, getRequestOptions('GET'));
     const body = await response.json();
-    if (!body) {
-      return [];
-    }
-    return Object.keys(body).map(key => ({
-      key,
-      ...body[key]
-    }));
+    return body || [];
   },
   post: async (path, data) => {
     const response = await fetch(`${apiUrl}${path}`, {
@@ -49,9 +50,13 @@ const api = {
 
 export async function getAllFeedback() {
   const feedback = await api.get('/feedback');
-  return feedback.reverse();
+  return transform(feedback).reverse();
 }
 
 export function postFeedback(feedback) {
   return api.post('/feedback', { feedback });
+}
+
+export function validateToken(token) {
+  return api.get(`/validateToken?token=${token}`);
 }
