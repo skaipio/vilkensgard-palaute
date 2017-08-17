@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { localStorageKeys } from './config';
 
 const firebaseApp = firebase.initializeApp({
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -20,6 +21,7 @@ const apiUrl = process.env.NODE_ENV === 'production' ? '/api' : 'https://us-cent
 const getRequestOptions = (method, headers = new Headers()) => {
   headers.append('Accept', 'application/json');
   headers.append('x-vilkensgard-environment', process.env.NODE_ENV || 'development');
+  headers.append('x-vilkensgard-token', localStorage.getItem(localStorageKeys.token));
   return {
     method,
     headers,

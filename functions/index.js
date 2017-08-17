@@ -8,6 +8,7 @@ admin.initializeApp(functions.config().firebase);
 const app = express();
 const feedbackController = require('./feedbackController');
 const authController = require('./authController');
+const authService = require('./authService');
 
 const whitelist = ['http://localhost:3000', 'https://vilkensgard-palaute.firebaseapp.com'];
 
@@ -28,9 +29,21 @@ app.use((req, res, next) => {
 
 app.use('*', cors(corsDelegate));
 app.options('*', cors(corsDelegate));
-
-app.use('(/api)?/feedback', feedbackController);
 app.use('(/api)?/validateToken', authController);
+app.use((req, res, next) => {
+  const token = req.header('x-vilkensgard-token');
+
+  const invalid = () => {
+    next({ error: 'Invalid token' });
+  }
+  if (!token) {
+    invalid();
+  } else {
+    authService.validateToken(token)
+      .then(tokenValid => tokenValid ? next() : invalid());
+  }
+})
+app.use('(/api)?/feedback', feedbackController);
 
 app.use((err, req, res, next) => {
   if (err.error === 'cors') {
