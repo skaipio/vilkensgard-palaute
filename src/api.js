@@ -15,18 +15,44 @@ const getRef = (ref) => {
   return database.ref(fullRef);
 }
 
-export async function getAllFeedback() {
-  const snapshot = await getRef('/feedback').once('value');
-  const data = snapshot.val();
-  if (!data) {
-    return [];
+const apiUrl = process.env.NODE_ENV === 'production' ? '/api' : 'https://us-central1-vilkensgard-palaute.cloudfunctions.net/api';
+
+const getRequestOptions = (method, headers) => (
+  {
+    method,
+    headers: {
+      ...headers,
+      'Accept': 'application/json'
+    }
   }
-  return Object.keys(data).map(key => ({
-    key,
-    ...data[key]
-  })).reverse();
+)
+
+const api = {
+  get: async (path) => {
+    const response = await fetch(`${apiUrl}${path}`, getRequestOptions('GET'));
+    const body = await response.json();
+    if (!body) {
+      return [];
+    }
+    return Object.keys(body).map(key => ({
+      key,
+      ...body[key]
+    }));
+  },
+  post: async (path, data) => {
+    const response = await fetch(`${apiUrl}${path}`, {
+      ...getRequestOptions('POST'),
+      body: JSON.stringify(data)
+    });
+    return response.json();
+  }
 }
 
-export async function postFeedback(feedback) {
-  return await getRef('/feedback').push({feedback})
+export async function getAllFeedback() {
+  const feedback = await api.get('/feedback');
+  return feedback.reverse();
+}
+
+export function postFeedback(feedback) {
+  return api.post('/feedback', { feedback });
 }

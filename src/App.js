@@ -3,6 +3,7 @@ import { Badge, ListGroup, ListGroupItem } from 'reactstrap';
 import './App.css';
 import { getAllFeedback } from './api';
 import FeedbackForm from './FeedbackForm';
+import { localStorageKeys } from './config';
 
 const FeedbackList = ({ feedbacks = [] }) =>
   <ListGroup>
@@ -28,6 +29,11 @@ class App extends Component {
   }
 
   componentDidMount() {
+    const query = window.location.search;
+    const matches = query.match(/[&?]token=(.+)[&]?/i);
+    if (matches && matches[1]) {
+      localStorage.setItem(localStorageKeys.token, matches[1]);
+    }
     this.getFeedbackToState();
   }
 

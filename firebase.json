@@ -3,8 +3,10 @@
     "public": "build",
     "rewrites": [
       {
-        "source": "**",
+        "source": "/",
         "destination": "/index.html"
+      }, {
+        "source": "/api/*", "function": "api"
       }
     ]
   }
