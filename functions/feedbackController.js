@@ -13,9 +13,11 @@ const refs = {
 
 const getRef = (env, path) => {
   const ref = refs[env || 'development'][path]
-  return admin.database().ref(path);
+  return admin.database().ref(ref);
 };
-const getEnv = (req) => req.header('X-VILKENSGARD-ENVIRONMENT');
+const getEnv = (req) => {
+  return req.header('x-vilkensgard-environment');
+};
 
 router.get('/', (req, res) => {
   const env = getEnv(req);

@@ -17,15 +17,14 @@ const getRef = (ref) => {
 
 const apiUrl = process.env.NODE_ENV === 'production' ? '/api' : 'https://us-central1-vilkensgard-palaute.cloudfunctions.net/api';
 
-const getRequestOptions = (method, headers) => (
-  {
+const getRequestOptions = (method, headers = new Headers()) => {
+  headers.append('Accept', 'application/json');
+  headers.append('x-vilkensgard-environment', process.env.NODE_ENV || 'development');
+  return {
     method,
-    headers: {
-      ...headers,
-      'Accept': 'application/json'
-    }
-  }
-)
+    headers,
+  };
+}
 
 const api = {
   get: async (path) => {
