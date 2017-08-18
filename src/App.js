@@ -32,15 +32,16 @@ class App extends Component {
       token = matches[1];
       localStorage.setItem(localStorageKeys.token, token);
     }
-    const tokenValid = await this.isTokenValid(token);
-    if (tokenValid) {
+    try {
+      const feedbacks = await getAllFeedback();
       this.setState({
-        tokenValid,
+        tokenValid: true,
         feedbacks: await getAllFeedback()
       })
-    } else {
+    } catch (error) {
+      console.error(error);
       this.setState({
-        tokenValid
+        tokenValid: false
       })
     }
   }

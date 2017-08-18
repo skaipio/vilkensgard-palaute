@@ -39,6 +39,7 @@ const api = {
   get: async (path) => {
     const response = await fetch(`${apiUrl}${path}`, getRequestOptions('GET'));
     const body = await response.json();
+    if (body.error) throw new Error(body.error);
     return body || [];
   },
   post: async (path, data) => {
@@ -46,7 +47,9 @@ const api = {
       ...getRequestOptions('POST'),
       body: JSON.stringify(data)
     });
-    return response.json();
+    const body = await response.json();
+    if (body.error) throw new Error(body.error);
+    return body;
   }
 }
 
